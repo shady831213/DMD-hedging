@@ -130,7 +130,7 @@ def readDatas(book, dm, bp, covArray):
 # read number of put options
 def readNOfOpt(book, nOfOptListDM, nOfOptListBP):
     sheet = book.get_sheet_by_name('NOFOpt')
-    cells = sheet['B2':'C5']
+    cells = sheet['B2':'C4']
     for cell in cells:
         value0, value1 = map(lambda x: x.value, cell)
         nOfOptListDM.append(value0)
@@ -275,166 +275,167 @@ if __name__ == '__main__':
     corrVerif = covArrayVerify[1, 0] / (np.sqrt(covArrayVerify[0, 0]) * np.sqrt(covArrayVerify[1, 1]))
 
     for iOfN in range(len(nOfOptListDM)):
-        ##################################################
-        # computing
-        ##################################################
-        '''variables
-             #hedgedRevenueDM
-             #hedgedRevenueBP
-             #hedgedRevenue
-             #hedgedRevenueMean
-             #hedgedRevenueStd
-             #hedgedRevenueInterval
-             #hedgedRevenueProp
-             #hedgedRevenuePropInterval
-             #unhedgedRevenueDM
-             #unhedgedRevenueBP
-             #unhedgedRevenue
-             #unhedgedRevenueMean
-             #unhedgedRevenueStd
-             #unhedgedRevenueInterval
-             #unhedgedRevenueProp
-             #unhedgedRevenuePropInterval
-         '''
-        hedgedRevenueDMList = []
-        hedgedRevenueBPList = []
-        hedgedRevenueList = []
-        hedgedRevenueMeanList = []
-        hedgedRevenueStdList = []
-        hedgedRevenueIntervalList = []
-        hedgedRevenuePropList = []
-        hedgedRevenuePropIntervalList = []
-        unhedgedRevenueDMList = []
-        unhedgedRevenueBPList = []
-        unhedgedRevenueList = []
-        unhedgedRevenueMeanList = []
-        unhedgedRevenueStdList = []
-        unhedgedRevenueIntervalList = []
-        unhedgedRevenuePropList = []
-        unhedgedRevenuePropIntervalList = []
+        for jOfN in range(len(nOfOptListBP)):
+            ##################################################
+            # computing
+            ##################################################
+            '''variables
+                 #hedgedRevenueDM
+                 #hedgedRevenueBP
+                 #hedgedRevenue
+                 #hedgedRevenueMean
+                 #hedgedRevenueStd
+                 #hedgedRevenueInterval
+                 #hedgedRevenueProp
+                 #hedgedRevenuePropInterval
+                 #unhedgedRevenueDM
+                 #unhedgedRevenueBP
+                 #unhedgedRevenue
+                 #unhedgedRevenueMean
+                 #unhedgedRevenueStd
+                 #unhedgedRevenueInterval
+                 #unhedgedRevenueProp
+                 #unhedgedRevenuePropInterval
+             '''
+            hedgedRevenueDMList = []
+            hedgedRevenueBPList = []
+            hedgedRevenueList = []
+            hedgedRevenueMeanList = []
+            hedgedRevenueStdList = []
+            hedgedRevenueIntervalList = []
+            hedgedRevenuePropList = []
+            hedgedRevenuePropIntervalList = []
+            unhedgedRevenueDMList = []
+            unhedgedRevenueBPList = []
+            unhedgedRevenueList = []
+            unhedgedRevenueMeanList = []
+            unhedgedRevenueStdList = []
+            unhedgedRevenueIntervalList = []
+            unhedgedRevenuePropList = []
+            unhedgedRevenuePropIntervalList = []
 
-        confidentLevel = 0.95
-        lowTh = 706.0
+            confidentLevel = 0.95
+            lowTh = 706.0
 
-        # computing
+            # computing
 
-        for i in range(len(kAndCListDM)):
-            for j in range(len(kAndCListBP)):
-                dm.nOfOpt = nOfOptListDM[iOfN]
-                bp.nOfOpt = nOfOptListBP[iOfN]
-                dm.k, dm.c = kAndCListDM[i]
-                bp.k, bp.c = kAndCListBP[j]
-                # hedged revenue
-                hedgedRevenueDM = dm.hedgedRevenue()
-                hedgedRevenueBP = bp.hedgedRevenue()
-                hedgedRevenue = hedgedRevenueDM + hedgedRevenueBP
-                hedgedRevenueDMList.append(hedgedRevenueDM)
-                hedgedRevenueBPList.append(hedgedRevenueBP)
-                hedgedRevenueList.append(hedgedRevenue)
-                # mean,std, confident interval
-                hedgedRevenueMean, hedgedRevenueStd, hedgedRevenueInterval = compFeatures(hedgedRevenue, confidentLevel)
-                hedgedRevenueMeanList.append(hedgedRevenueMean)
-                hedgedRevenueStdList.append(hedgedRevenueStd)
-                hedgedRevenueIntervalList.append(hedgedRevenueInterval)
-                # prop, prop confident interval
-                hedgedRevenueProp, hedgedRevenuePropInterval = compProp(hedgedRevenue, confidentLevel, lowTh)
-                hedgedRevenuePropList.append(hedgedRevenueProp)
-                hedgedRevenuePropIntervalList.append(hedgedRevenuePropInterval)
+            for i in range(len(kAndCListDM)):
+                for j in range(len(kAndCListBP)):
+                    dm.nOfOpt = nOfOptListDM[iOfN]
+                    bp.nOfOpt = nOfOptListBP[jOfN]
+                    dm.k, dm.c = kAndCListDM[i]
+                    bp.k, bp.c = kAndCListBP[j]
+                    # hedged revenue
+                    hedgedRevenueDM = dm.hedgedRevenue()
+                    hedgedRevenueBP = bp.hedgedRevenue()
+                    hedgedRevenue = hedgedRevenueDM + hedgedRevenueBP
+                    hedgedRevenueDMList.append(hedgedRevenueDM)
+                    hedgedRevenueBPList.append(hedgedRevenueBP)
+                    hedgedRevenueList.append(hedgedRevenue)
+                    # mean,std, confident interval
+                    hedgedRevenueMean, hedgedRevenueStd, hedgedRevenueInterval = compFeatures(hedgedRevenue, confidentLevel)
+                    hedgedRevenueMeanList.append(hedgedRevenueMean)
+                    hedgedRevenueStdList.append(hedgedRevenueStd)
+                    hedgedRevenueIntervalList.append(hedgedRevenueInterval)
+                    # prop, prop confident interval
+                    hedgedRevenueProp, hedgedRevenuePropInterval = compProp(hedgedRevenue, confidentLevel, lowTh)
+                    hedgedRevenuePropList.append(hedgedRevenueProp)
+                    hedgedRevenuePropIntervalList.append(hedgedRevenuePropInterval)
 
-                # unhedged revenue
-                unhedgedRevenueDM = dm.unhedgedRevenue()
-                unhedgedRevenueBP = bp.unhedgedRevenue()
-                unhedgedRevenue = unhedgedRevenueDM + unhedgedRevenueBP
-                unhedgedRevenueDMList.append(unhedgedRevenueDM)
-                unhedgedRevenueBPList.append(unhedgedRevenueBP)
-                unhedgedRevenueList.append(unhedgedRevenue)
-                # mean,std, confident interval
-                unhedgedRevenueMean, unhedgedRevenueStd, unhedgedRevenueInterval = compFeatures(unhedgedRevenue,
-                                                                                                confidentLevel)
-                unhedgedRevenueMeanList.append(unhedgedRevenueMean)
-                unhedgedRevenueStdList.append(unhedgedRevenueStd)
-                unhedgedRevenueIntervalList.append(unhedgedRevenueInterval)
-                # prop, prop confident interval
-                unhedgedRevenueProp, unhedgedRevenuePropInterval = compProp(unhedgedRevenue, confidentLevel, lowTh)
-                unhedgedRevenuePropList.append(unhedgedRevenueProp)
-                unhedgedRevenuePropIntervalList.append(unhedgedRevenuePropInterval)
+                    # unhedged revenue
+                    unhedgedRevenueDM = dm.unhedgedRevenue()
+                    unhedgedRevenueBP = bp.unhedgedRevenue()
+                    unhedgedRevenue = unhedgedRevenueDM + unhedgedRevenueBP
+                    unhedgedRevenueDMList.append(unhedgedRevenueDM)
+                    unhedgedRevenueBPList.append(unhedgedRevenueBP)
+                    unhedgedRevenueList.append(unhedgedRevenue)
+                    # mean,std, confident interval
+                    unhedgedRevenueMean, unhedgedRevenueStd, unhedgedRevenueInterval = compFeatures(unhedgedRevenue,
+                                                                                                    confidentLevel)
+                    unhedgedRevenueMeanList.append(unhedgedRevenueMean)
+                    unhedgedRevenueStdList.append(unhedgedRevenueStd)
+                    unhedgedRevenueIntervalList.append(unhedgedRevenueInterval)
+                    # prop, prop confident interval
+                    unhedgedRevenueProp, unhedgedRevenuePropInterval = compProp(unhedgedRevenue, confidentLevel, lowTh)
+                    unhedgedRevenuePropList.append(unhedgedRevenueProp)
+                    unhedgedRevenuePropIntervalList.append(unhedgedRevenuePropInterval)
 
-                # draw one opt hist
-                if iOfN == 0 and i == 0 and j == 0:
-                    plt.hist(hedgedRevenue)
-                    plt.title('hedgedRevenue\n n=%d kDM=%f cDM=%f kBP=%f cBP=%f' % (dm.nOfOpt, dm.k, dm.c, bp.k, bp.c))
-                    plt.xlabel('Revenue')
-                    plt.ylabel('frequency')
-                    plt.savefig('output/hist_hedgedRevenue_%d_dmOPT%d_bpOPT%d' % (dm.nOfOpt, i, j))
-                    plt.close('all')
+                    # draw one opt hist
+                    if iOfN == 0 and jOfN == 0 and i == 0 and j == 0:
+                        plt.hist(hedgedRevenue)
+                        plt.title('hedgedRevenue\n nDM=%d nBP=%d kDM=%f cDM=%f kBP=%f cBP=%f' % (dm.nOfOpt, bp.nOfOpt, dm.k, dm.c, bp.k, bp.c))
+                        plt.xlabel('Revenue')
+                        plt.ylabel('frequency')
+                        plt.savefig('output/hist_hedgedRevenue_%d_dmOPT%d_bpOPT%d' % (dm.nOfOpt, i, j))
+                        plt.close('all')
 
-                    plt.hist(unhedgedRevenue)
-                    plt.title(
-                        'unhedgedRevenue\n n=%d kDM=%f cDM=%f kBP=%f cBP=%f' % (dm.nOfOpt, dm.k, dm.c, bp.k, bp.c))
-                    plt.xlabel('Revenue')
-                    plt.ylabel('frequency')
-                    plt.savefig('output/hist_unhedgedRevenue_%d_dmOPT%d_bpOPT%d' % (dm.nOfOpt, i, j))
-                    plt.close('all')
+                        plt.hist(unhedgedRevenue)
+                        plt.title(
+                            'unhedgedRevenue\n nDM=%d nBP=%d kDM=%f cDM=%f kBP=%f cBP=%f' % (dm.nOfOpt, bp.nOfOpt, dm.k, dm.c, bp.k, bp.c))
+                        plt.xlabel('Revenue')
+                        plt.ylabel('frequency')
+                        plt.savefig('output/hist_unhedgedRevenue_%d_dmOPT%d_bpOPT%d' % (dm.nOfOpt, i, j))
+                        plt.close('all')
 
-        ##################################################
-        # save result
-        ##################################################
+            ##################################################
+            # save result
+            ##################################################
 
-        # sheet as simulation
-        if iOfN == 0:
-            simSheet = outputBook.worksheets[0]
-            simSheet.title = 'SIMULATION'
-            # output corrVerif
-            simSheet.cell('A1').value = 'corrVerif'
-            simSheet.cell('B1').value = corrVerif
-            # output simulation result
-            simSheet.cell('D1').value = 'change of DM'
-            for i in range(dm.samples.size):
-                simSheet.cell('D%d' % (2 + i)).value = dm.samples[i]
+            # sheet as simulation
+            if iOfN == 0 and jOfN == 0:
+                simSheet = outputBook.worksheets[0]
+                simSheet.title = 'SIMULATION'
+                # output corrVerif
+                simSheet.cell('A1').value = 'corrVerif'
+                simSheet.cell('B1').value = corrVerif
+                # output simulation result
+                simSheet.cell('D1').value = 'change of DM'
+                for i in range(dm.samples.size):
+                    simSheet.cell('D%d' % (2 + i)).value = dm.samples[i]
 
-            simSheet.cell('E1').value = 'change of BP'
-            for i in range(bp.samples.size):
-                simSheet.cell('E%d' % (2 + i)).value = bp.samples[i]
+                simSheet.cell('E1').value = 'change of BP'
+                for i in range(bp.samples.size):
+                    simSheet.cell('E%d' % (2 + i)).value = bp.samples[i]
 
-            # sheet as unhedged revenue analysis
+                # sheet as unhedged revenue analysis
+                anaSheet = outputBook.create_sheet()
+                anaSheet.title = 'ANALYSIS_UNHEDGED'
+                # output mean table
+                write2DTable(anaSheet, 'mean of unhedgedRevenue', kAndCListDM, kAndCListBP, unhedgedRevenueMeanList, 1)
+                # output std table
+                write2DTable(anaSheet, 'std of unhedgedRevenue', kAndCListDM, kAndCListBP, unhedgedRevenueStdList, 15)
+                # output confident interval table
+                write2DTable(anaSheet, 'min of unhedgedRevenue', kAndCListDM, kAndCListBP,
+                             map(lambda x: x[0], unhedgedRevenueIntervalList), 29)
+                write2DTable(anaSheet, 'max of unhedgedRevenue', kAndCListDM, kAndCListBP,
+                             map(lambda x: x[1], unhedgedRevenueIntervalList), 43)
+                # output propotion table
+                write2DTable(anaSheet, 'proportion of unhedgedRevenue at least 706', kAndCListDM, kAndCListBP,
+                             unhedgedRevenuePropList, 60)
+                # output propotion confident interval table
+                write2DTable(anaSheet, 'min proportion of unhedgedRevenue at least 706', kAndCListDM, kAndCListBP,
+                             map(lambda x: x[0], unhedgedRevenuePropIntervalList), 74)
+                write2DTable(anaSheet, 'max proportion of unhedgedRevenue at least 706', kAndCListDM, kAndCListBP,
+                             map(lambda x: x[1], unhedgedRevenuePropIntervalList), 88)
+
+            # sheet as hedged revenue analysis
             anaSheet = outputBook.create_sheet()
-            anaSheet.title = 'ANALYSIS_UNHEDGED'
+            anaSheet.title = 'ANALYSIS_HEDGED_nDM%3d_nBP%3d' % (nOfOptListDM[iOfN], nOfOptListBP[jOfN])
             # output mean table
-            write2DTable(anaSheet, 'mean of unhedgedRevenue', kAndCListDM, kAndCListBP, unhedgedRevenueMeanList, 1)
+            write2DTable(anaSheet, 'mean of hedgedRevenue', kAndCListDM, kAndCListBP, hedgedRevenueMeanList, 1)
             # output std table
-            write2DTable(anaSheet, 'std of unhedgedRevenue', kAndCListDM, kAndCListBP, unhedgedRevenueStdList, 15)
+            write2DTable(anaSheet, 'std of hedgedRevenue', kAndCListDM, kAndCListBP, hedgedRevenueStdList, 15)
             # output confident interval table
-            write2DTable(anaSheet, 'min of unhedgedRevenue', kAndCListDM, kAndCListBP,
-                         map(lambda x: x[0], unhedgedRevenueIntervalList), 29)
-            write2DTable(anaSheet, 'max of unhedgedRevenue', kAndCListDM, kAndCListBP,
-                         map(lambda x: x[1], unhedgedRevenueIntervalList), 43)
+            write2DTable(anaSheet, 'min of hedgedRevenue', kAndCListDM, kAndCListBP,
+                         map(lambda x: x[0], hedgedRevenueIntervalList), 29)
+            write2DTable(anaSheet, 'max of hedgedRevenue', kAndCListDM, kAndCListBP,
+                         map(lambda x: x[1], hedgedRevenueIntervalList), 43)
             # output propotion table
-            write2DTable(anaSheet, 'proportion of unhedgedRevenue at least 706', kAndCListDM, kAndCListBP,
-                         unhedgedRevenuePropList, 60)
+            write2DTable(anaSheet, 'proportion of hedgedRevenue at least 706', kAndCListDM, kAndCListBP,
+                         hedgedRevenuePropList, 60)
             # output propotion confident interval table
-            write2DTable(anaSheet, 'min proportion of unhedgedRevenue at least 706', kAndCListDM, kAndCListBP,
-                         map(lambda x: x[0], unhedgedRevenuePropIntervalList), 74)
-            write2DTable(anaSheet, 'max proportion of unhedgedRevenue at least 706', kAndCListDM, kAndCListBP,
-                         map(lambda x: x[1], unhedgedRevenuePropIntervalList), 88)
-
-        # sheet as hedged revenue analysis
-        anaSheet = outputBook.create_sheet()
-        anaSheet.title = 'ANALYSIS_HEDGED_nDM%d_nBP%d' % (nOfOptListDM[iOfN], nOfOptListBP[iOfN])
-        # output mean table
-        write2DTable(anaSheet, 'mean of hedgedRevenue', kAndCListDM, kAndCListBP, hedgedRevenueMeanList, 1)
-        # output std table
-        write2DTable(anaSheet, 'std of hedgedRevenue', kAndCListDM, kAndCListBP, hedgedRevenueStdList, 15)
-        # output confident interval table
-        write2DTable(anaSheet, 'min of hedgedRevenue', kAndCListDM, kAndCListBP,
-                     map(lambda x: x[0], hedgedRevenueIntervalList), 29)
-        write2DTable(anaSheet, 'max of hedgedRevenue', kAndCListDM, kAndCListBP,
-                     map(lambda x: x[1], hedgedRevenueIntervalList), 43)
-        # output propotion table
-        write2DTable(anaSheet, 'proportion of hedgedRevenue at least 706', kAndCListDM, kAndCListBP,
-                     hedgedRevenuePropList, 60)
-        # output propotion confident interval table
-        write2DTable(anaSheet, 'min proportion of hedgedRevenue at least 706', kAndCListDM, kAndCListBP,
-                     map(lambda x: x[0], hedgedRevenuePropIntervalList), 74)
-        write2DTable(anaSheet, 'max proportion of hedgedRevenue at least 706', kAndCListDM, kAndCListBP,
-                     map(lambda x: x[1], hedgedRevenuePropIntervalList), 88)
+            write2DTable(anaSheet, 'min proportion of hedgedRevenue at least 706', kAndCListDM, kAndCListBP,
+                         map(lambda x: x[0], hedgedRevenuePropIntervalList), 74)
+            write2DTable(anaSheet, 'max proportion of hedgedRevenue at least 706', kAndCListDM, kAndCListBP,
+                         map(lambda x: x[1], hedgedRevenuePropIntervalList), 88)
     outputBook.save('output/report.xlsx')
