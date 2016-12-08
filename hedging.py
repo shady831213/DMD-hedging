@@ -2,6 +2,7 @@ import openpyxl as exl
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as ss
+import os.path as path
 
 
 ################################################
@@ -221,7 +222,7 @@ if __name__ == '__main__':
     # init excel
     ################################################
     # get work book
-    inputBook = exl.load_workbook('datas/datas.xlsx')
+    inputBook = exl.load_workbook(path.join('datas','datas.xlsx'))
     # output book
     outputBook = exl.Workbook()
     # outputWriter = exl.writer.excel.ExcelWriter(workbook=outputBook)
@@ -438,4 +439,4 @@ if __name__ == '__main__':
                          map(lambda x: x[0], hedgedRevenuePropIntervalList), 74)
             write2DTable(anaSheet, 'max proportion of hedgedRevenue at least 706', kAndCListDM, kAndCListBP,
                          map(lambda x: x[1], hedgedRevenuePropIntervalList), 88)
-    outputBook.save('output/report.xlsx')
+    outputBook.save(path.join('output','report.xlsx'))
